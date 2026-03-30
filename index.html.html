@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>MyPet — India's Trusted Pet Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:#f5f8ff;color:#0d1f3c;overflow-x:hidden}
+:root{
+  --navy:#0d1f3c;--blue:#1a56db;--blue-mid:#2563eb;--blue-light:#3b82f6;
+  --blue-50:#eff6ff;--blue-100:#dbeafe;--blue-200:#bfdbfe;
+  --warm:#fff8f0;--orange-accent:#f97316;
+  --white:#ffffff;--gray-50:#f8fafc;--gray-100:#f1f5f9;
+  --gray-200:#e2e8f0;--gray-400:#94a3b8;--gray-600:#475569;--gray-800:#1e293b;
+  --green:#16a34a;--green-bg:#f0fdf4;--green-border:#bbf7d0;
+  --radius-sm:8px;--radius-md:12px;--radius-lg:18px;--radius-xl:24px;
+  --shadow-sm:0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md:0 4px 16px rgba(13,31,60,0.08);
+  --shadow-lg:0 12px 40px rgba(13,31,60,0.12);
+}
+
+/* ── NAV ── */
+nav{
+  background:rgba(255,255,255,0.97);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--gray-200);
+  padding:0 6%;display:flex;align-items:center;justify-content:space-between;
+  height:66px;position:sticky;top:0;z-index:200;
+}
+.logo{display:flex;align-items:center;gap:9px;text-decoration:none}
+.logo-icon{width:36px;height:36px;border-radius:10px;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:18px}
+.logo-text{font-family:'Playfair Display',serif;font-size:21px;color:var(--navy);letter-spacing:-.3px}
+.logo-text span{color:var(--blue)}
+.trust-strip-nav{display:flex;align-items:center;gap:18px}
+.ts-item{display:flex;align-items:center;gap:5px;font-size:12.5px;font-weight:600;color:var(--gray-600)}
+.ts-item .check{width:16px;height:16px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;flex-shrink:0}
+.nav-actions{display:flex;align-items:center;gap:10px}
+.btn-ghost{padding:8px 16px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);background:transparent;font-size:13.5px;font-weight:600;color:var(--gray-600);cursor:pointer;font-family:'Nunito',sans-serif;transition:all .2s}
+.btn-ghost:hover{border-color:var(--blue);color:var(--blue)}
+.btn-nav-cta{padding:8px 18px;border:none;border-radius:var(--radius-sm);background:var(--blue);color:#fff;font-size:13.5px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .2s}
+.btn-nav-cta:hover{background:#1d4ed8;transform:translateY(-1px)}
+
+/* ── HERO ── */
+.hero{
+  padding:72px 6% 64px;
+  background:linear-gradient(160deg,#f0f6ff 0%,#fff8f0 50%,#f5f8ff 100%);
+  display:flex;align-items:center;gap:56px;position:relative;overflow:hidden;
+}
+.hero-blob{position:absolute;top:-120px;right:-100px;width:480px;height:480px;border-radius:50%;background:radial-gradient(circle,#bfdbfe 0%,transparent 65%);opacity:0.5;pointer-events:none}
+.hero-blob2{position:absolute;bottom:-80px;left:10%;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,#fed7aa 0%,transparent 65%);opacity:0.25;pointer-events:none}
+.hero-left{flex:1;max-width:580px;position:relative;z-index:2}
+.hero-pill{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--blue-200);border-radius:20px;padding:6px 14px 6px 8px;margin-bottom:22px}
+.pill-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px #bbf7d0}
+.pill-text{font-size:12.5px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.6px}
+h1{font-family:'Playfair Display',serif;font-size:50px;line-height:1.1;color:var(--navy);letter-spacing:-1px;margin-bottom:18px}
+h1 em{font-style:italic;color:var(--blue)}
+h1 .warm{color:var(--orange-accent)}
+.hero-sub{font-size:16.5px;color:var(--gray-600);line-height:1.7;margin-bottom:10px;max-width:490px}
+.trust-row{display:flex;align-items:center;gap:6px;margin-bottom:30px;flex-wrap:wrap}
+.trust-badge{display:flex;align-items:center;gap:5px;background:#fff;border:1px solid var(--green-border);border-radius:20px;padding:4px 10px;font-size:12px;font-weight:700;color:var(--green)}
+.trust-sep{width:4px;height:4px;border-radius:50%;background:var(--gray-200)}
+.hero-ctas{display:flex;gap:12px;flex-wrap:wrap}
+.btn-primary{padding:15px 32px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius-md);font-size:15.5px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;box-shadow:0 6px 20px rgba(26,86,219,0.3);transition:all .25s}
+.btn-primary:hover{background:#1d4ed8;transform:translateY(-2px);box-shadow:0 10px 28px rgba(26,86,219,0.35)}
+.btn-adopt{padding:15px 32px;background:var(--green-bg);color:var(--green);border:1.5px solid var(--green-border);border-radius:var(--radius-md);font-size:15.5px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .25s}
+.btn-adopt:hover{background:#dcfce7;transform:translateY(-2px)}
+
+/* ── HERO VISUAL ── */
+.hero-right{flex:0 0 400px;position:relative;z-index:2}
+.pet-stack{position:relative;height:360px}
+.pcard{position:absolute;background:#fff;border-radius:var(--radius-lg);border:1px solid var(--gray-200);overflow:hidden;box-shadow:var(--shadow-lg);width:210px}
+.pcard-main{left:50px;top:10px;z-index:4;width:225px}
+.pcard-b1{left:10px;top:30px;z-index:3;transform:rotate(-6deg);opacity:.88}
+.pcard-b2{left:100px;top:20px;z-index:2;transform:rotate(5deg);opacity:.75}
+.pcard img{width:100%;height:140px;object-fit:cover;display:block}
+.pcard-info{padding:12px 14px}
+.pcard-name{font-weight:700;font-size:14.5px;color:var(--navy)}
+.pcard-sub{font-size:11.5px;color:var(--gray-400);margin-top:2px}
+.pcard-foot{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+.pcard-price{font-weight:700;font-size:14px;color:var(--blue)}
+.vtag{font-size:10px;font-weight:700;background:var(--green-bg);color:var(--green);border:1px solid var(--green-border);border-radius:6px;padding:3px 8px}
+.float-chip{position:absolute;background:#fff;border-radius:var(--radius-md);padding:9px 13px;border:1px solid var(--gray-200);box-shadow:var(--shadow-md);display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700;color:var(--navy);z-index:10}
+.fc-emoji{font-size:16px}
+.fchip1{bottom:20px;left:0}
+.fchip2{top:5px;right:0}
+
+/* ── SEARCH ── */
+.search-wrap{background:#fff;border-bottom:1px solid var(--gray-200);padding:28px 6%}
+.search-inner{max-width:780px;margin:0 auto}
+.search-label{font-size:13px;font-weight:700;color:var(--gray-600);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
+.search-box{display:flex;align-items:center;background:var(--gray-50);border:2px solid var(--gray-200);border-radius:var(--radius-md);padding:6px 6px 6px 18px;transition:border-color .2s}
+.search-box:focus-within{border-color:var(--blue-light)}
+.search-box input{flex:1;border:none;background:transparent;font-size:15px;color:var(--navy);font-family:'Nunito',sans-serif;outline:none;padding:8px 0}
+.search-box input::placeholder{color:var(--gray-400)}
+.filters{display:flex;gap:6px;margin-right:8px}
+.fpill{padding:7px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--gray-200);background:#fff;font-size:13px;font-weight:700;color:var(--gray-600);cursor:pointer;font-family:'Nunito',sans-serif;transition:all .2s}
+.fpill:hover,.fpill.on{background:var(--blue-50);border-color:var(--blue-200);color:var(--blue)}
+.btn-srch{padding:10px 22px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .2s;white-space:nowrap}
+.btn-srch:hover{background:#1d4ed8}
+
+/* ── LISTINGS ── */
+.listings{padding:72px 6%}
+.sec-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:36px;flex-wrap:wrap;gap:14px}
+.sec-eyebrow{font-size:12px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px}
+.sec-title{font-family:'Playfair Display',serif;font-size:34px;color:var(--navy);letter-spacing:-.5px}
+.sec-sub{font-size:15px;color:var(--gray-400);margin-top:6px;max-width:460px}
+.btn-outline-blue{padding:10px 20px;border:2px solid var(--blue);border-radius:var(--radius-sm);color:var(--blue);background:transparent;font-size:13.5px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .2s}
+.btn-outline-blue:hover{background:var(--blue-50)}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:22px}
+.lcard{background:#fff;border-radius:var(--radius-lg);border:1px solid var(--gray-200);overflow:hidden;transition:transform .22s,box-shadow .22s;cursor:pointer}
+.lcard:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg);border-color:var(--blue-200)}
+.lcard-img-wrap{position:relative;height:190px;overflow:hidden}
+.lcard-img-wrap img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}
+.lcard:hover .lcard-img-wrap img{transform:scale(1.05)}
+.img-badge{position:absolute;top:10px;left:10px;font-size:10.5px;font-weight:700;padding:4px 9px;border-radius:6px}
+.badge-v{background:rgba(255,255,255,.92);color:var(--green);border:1px solid var(--green-border)}
+.badge-ngo{background:rgba(255,255,255,.92);color:var(--blue);border:1px solid var(--blue-200)}
+.img-type{position:absolute;top:10px;right:10px;font-size:10.5px;font-weight:700;padding:4px 10px;border-radius:6px}
+.type-buy{background:var(--blue);color:#fff}
+.type-adopt{background:var(--green);color:#fff}
+.lcard-body{padding:16px}
+.lcard-name{font-weight:700;font-size:16px;color:var(--navy)}
+.lcard-meta{display:flex;gap:12px;margin-top:5px;flex-wrap:wrap}
+.lmeta-item{display:flex;align-items:center;gap:4px;font-size:12.5px;color:var(--gray-400);font-weight:600}
+.lcard-foot{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid var(--gray-100)}
+.lcard-price{font-weight:800;font-size:17px;color:var(--blue)}
+.lcard-price.free{color:var(--green)}
+.btn-contact{padding:8px 14px;background:var(--blue-50);color:var(--blue);border:1.5px solid var(--blue-200);border-radius:var(--radius-sm);font-size:12.5px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;display:flex;align-items:center;gap:5px;transition:all .2s}
+.btn-contact:hover{background:#25d366;color:#fff;border-color:#25d366}
+
+/* ── FEATURES ── */
+.features{padding:72px 6%;background:#fff}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:44px}
+.feat-card{padding:26px;border:1.5px solid var(--gray-100);border-radius:var(--radius-lg);transition:all .22s;background:#fff}
+.feat-card:hover{border-color:var(--blue-200);box-shadow:var(--shadow-md);transform:translateY(-3px)}
+.feat-icon{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px}
+.feat-icon.blue{background:var(--blue-50)}
+.feat-icon.green{background:var(--green-bg)}
+.feat-icon.warm{background:#fff7ed}
+.feat-title{font-weight:700;font-size:15.5px;color:var(--navy);margin-bottom:7px}
+.feat-desc{font-size:13.5px;color:var(--gray-400);line-height:1.65}
+
+/* ── HOW IT WORKS ── */
+.process{padding:72px 6%;background:var(--gray-50)}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:44px;position:relative}
+.steps::after{content:'';position:absolute;top:28px;left:12%;right:12%;height:2px;background:var(--blue-100);z-index:0}
+.step{display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;z-index:1}
+.step-num{width:56px;height:56px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;margin-bottom:16px;border:4px solid #fff;box-shadow:var(--shadow-md)}
+.step-title{font-weight:700;font-size:15px;color:var(--navy);margin-bottom:6px}
+.step-desc{font-size:13px;color:var(--gray-400);line-height:1.55;padding:0 8px}
+
+/* ── TRUST BAND ── */
+.trust-band{background:var(--navy);padding:64px 6%;text-align:center}
+.trust-band .eyebrow{color:var(--blue-200);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px}
+.trust-band h2{font-family:'Playfair Display',serif;font-size:36px;color:#fff;margin-bottom:10px;letter-spacing:-.5px}
+.trust-band p{font-size:15px;color:var(--blue-200);margin-bottom:48px}
+.trust-pills{display:flex;justify-content:center;gap:20px;flex-wrap:wrap}
+.tpill{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:var(--radius-lg);padding:18px 28px}
+.tpill-icon{font-size:26px}
+.tpill-text{text-align:left}
+.tpill-label{font-size:13px;font-weight:700;color:#fff}
+.tpill-sub{font-size:12px;color:var(--blue-200);margin-top:2px}
+
+/* ── CTA ── */
+.cta-sect{padding:96px 6%;text-align:center;background:linear-gradient(160deg,var(--blue-50) 0%,#fff 60%,#fff8f0 100%)}
+.cta-sect h2{font-family:'Playfair Display',serif;font-size:40px;color:var(--navy);letter-spacing:-.5px;margin-bottom:14px}
+.cta-sect p{font-size:16px;color:var(--gray-600);margin-bottom:36px;max-width:480px;margin-left:auto;margin-right:auto}
+.cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+
+/* ── FOOTER ── */
+footer{background:var(--navy);padding:52px 6% 28px}
+.foot-top{display:flex;gap:48px;margin-bottom:40px;flex-wrap:wrap}
+.foot-brand{flex:0 0 220px}
+.foot-brand p{font-size:13px;color:var(--blue-200);margin-top:10px;line-height:1.7}
+.foot-col h4{font-size:12.5px;font-weight:700;color:#fff;margin-bottom:14px;text-transform:uppercase;letter-spacing:.8px}
+.foot-col a{display:block;font-size:13px;color:var(--blue-200);text-decoration:none;margin-bottom:9px;transition:color .2s}
+.foot-col a:hover{color:#fff}
+.foot-bot{border-top:1px solid rgba(255,255,255,.1);padding-top:22px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.foot-bot p{font-size:12px;color:var(--blue-200)}
+
+/* ── CONTACT MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(13,31,60,.55);z-index:500;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal{background:#fff;border-radius:var(--radius-xl);padding:32px;max-width:420px;width:100%;position:relative;box-shadow:0 24px 64px rgba(0,0,0,.2);animation:popIn .25s ease}
+@keyframes popIn{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-close{position:absolute;top:14px;right:16px;background:var(--gray-100);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:var(--gray-600);transition:background .2s}
+.modal-close:hover{background:var(--gray-200)}
+.modal-pet-info{display:flex;align-items:center;gap:14px;margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--gray-100)}
+.modal-pet-img{width:60px;height:60px;border-radius:var(--radius-md);object-fit:cover}
+.modal-pet-name{font-weight:700;font-size:17px;color:var(--navy)}
+.modal-pet-sub{font-size:13px;color:var(--gray-400);margin-top:2px}
+.modal h3{font-family:'Playfair Display',serif;font-size:22px;color:var(--navy);margin-bottom:6px}
+.modal-sub{font-size:13.5px;color:var(--gray-400);margin-bottom:22px;line-height:1.6}
+.modal-input{width:100%;padding:11px 14px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-size:14px;font-family:'Nunito',sans-serif;color:var(--navy);outline:none;margin-bottom:12px;transition:border-color .2s}
+.modal-input:focus{border-color:var(--blue)}
+.modal-textarea{width:100%;padding:11px 14px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-size:14px;font-family:'Nunito',sans-serif;color:var(--navy);outline:none;margin-bottom:12px;resize:vertical;min-height:80px;transition:border-color .2s}
+.modal-textarea:focus{border-color:var(--blue)}
+.wa-btn{width:100%;padding:13px;background:#25d366;color:#fff;border:none;border-radius:var(--radius-md);font-size:15px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .2s;margin-bottom:10px}
+.wa-btn:hover{background:#1ebe5c}
+.msg-btn{width:100%;padding:12px;background:var(--blue-50);color:var(--blue);border:1.5px solid var(--blue-200);border-radius:var(--radius-md);font-size:14px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .2s}
+.msg-btn:hover{background:var(--blue-100)}
+.modal-or{text-align:center;font-size:12px;color:var(--gray-400);margin:10px 0;font-weight:600}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+.hero-left{animation:fadeUp .65s ease both}
+.hero-right{animation:fadeUp .65s .12s ease both}
+</style>
+</head>
+<body>
+
+<!-- ══════════════ NAV ══════════════ -->
+<nav>
+  <a class="logo" href="#">
+    <div class="logo-icon">🐾</div>
+    <div class="logo-text">My<span>Pet</span></div>
+  </a>
+  <div class="trust-strip-nav">
+    <div class="ts-item"><div class="check">✓</div>Verified Sellers</div>
+    <div class="ts-item"><div class="check">✓</div>Safe Adoption</div>
+    <div class="ts-item"><div class="check">✓</div>No Fake Listings</div>
+  </div>
+  <div class="nav-actions">
+    <button class="btn-ghost">Log In</button>
+    <button class="btn-nav-cta">List a Pet</button>
+  </div>
+</nav>
+
+<!-- ══════════════ HERO ══════════════ -->
+<section class="hero">
+  <div class="hero-blob"></div>
+  <div class="hero-blob2"></div>
+  <div class="hero-left">
+    <div class="hero-pill"><span class="pill-dot"></span><span class="pill-text">India's Trusted Pet Platform</span></div>
+    <h1>Find Your Perfect <em>Companion,</em> With <span class="warm">Trust.</span></h1>
+    <p class="hero-sub">Buy or adopt verified pets across India — connect directly with sellers, rescuers, and NGOs. No middlemen. No scams.</p>
+    <div class="trust-row">
+      <div class="trust-badge">✓ Verified Sellers</div>
+      <div class="trust-sep"></div>
+      <div class="trust-badge">✓ Safe Adoption</div>
+      <div class="trust-sep"></div>
+      <div class="trust-badge">✓ No Fake Listings</div>
+    </div>
+    <div class="hero-ctas">
+      <button class="btn-primary" onclick="document.querySelector('.listings').scrollIntoView({behavior:'smooth'})">🐾 Browse Pets</button>
+      <button class="btn-adopt" onclick="document.querySelector('.listings').scrollIntoView({behavior:'smooth'})">🤍 Adopt a Pet</button>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="pet-stack">
+      <div class="pcard pcard-b2">
+        <img src="https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=300&h=200&fit=crop" alt="rabbit"/>
+        <div class="pcard-info"><div class="pcard-name">Snowball</div><div class="pcard-sub">Holland Lop · 4 months</div></div>
+      </div>
+      <div class="pcard pcard-b1">
+        <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&h=200&fit=crop" alt="cat"/>
+        <div class="pcard-info"><div class="pcard-name">Luna</div><div class="pcard-sub">Persian · 3 months</div></div>
+      </div>
+      <div class="pcard pcard-main">
+        <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=320&h=200&fit=crop" alt="dog"/>
+        <div class="pcard-info">
+          <div class="pcard-name">Bruno</div>
+          <div class="pcard-sub">Golden Retriever · 2 months · Bangalore</div>
+          <div class="pcard-foot"><span class="pcard-price">₹18,000</span><span class="vtag">✓ Verified</span></div>
+        </div>
+      </div>
+      <div class="float-chip fchip1"><span class="fc-emoji">🛡️</span><span>Seller Verified</span></div>
+      <div class="float-chip fchip2"><span class="fc-emoji">💬</span><span>Direct Contact</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ SEARCH ══════════════ -->
+<div class="search-wrap">
+  <div class="search-inner">
+    <div class="search-label">Search for your next companion</div>
+    <div class="search-box">
+      <input type="text" placeholder="Breed, city, or pet type — e.g. Labrador in Mumbai"/>
+      <div class="filters">
+        <button class="fpill on">All</button>
+        <button class="fpill">Dogs</button>
+        <button class="fpill">Cats</button>
+        <button class="fpill">Birds</button>
+      </div>
+      <button class="btn-srch">Search</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ LISTINGS ══════════════ -->
+<section class="listings">
+  <div class="sec-head">
+    <div>
+      <div class="sec-eyebrow">Featured Listings</div>
+      <div class="sec-title">Pets Looking for a Home</div>
+      <div class="sec-sub">All listings are manually verified. Contact sellers directly — no commission, no delay.</div>
+    </div>
+    <button class="btn-outline-blue">View All Listings →</button>
+  </div>
+  <div class="cards-grid">
+
+    <div class="lcard">
+      <div class="lcard-img-wrap">
+        <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&h=280&fit=crop" alt="Labrador"/>
+        <span class="img-badge badge-v">✓ Verified</span>
+        <span class="img-type type-buy">Buy</span>
+      </div>
+      <div class="lcard-body">
+        <div class="lcard-name">Max — Labrador Puppy</div>
+        <div class="lcard-meta">
+          <span class="lmeta-item">🐾 Male, 8 wks</span>
+          <span class="lmeta-item">📍 Bangalore</span>
+          <span class="lmeta-item">💉 Vaccinated</span>
+        </div>
+        <div class="lcard-foot">
+          <span class="lcard-price">₹22,000</span>
+          <button class="btn-contact" onclick="openContact('Max','Labrador Puppy','https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=80&h=80&fit=crop')">💬 Contact</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <div class="lcard-img-wrap">
+        <img src="https://images.unsplash.com/photo-1513360371489-6b4e20f58025?w=400&h=280&fit=crop" alt="Persian cat"/>
+        <span class="img-badge badge-v">✓ Verified</span>
+        <span class="img-type type-buy">Buy</span>
+      </div>
+      <div class="lcard-body">
+        <div class="lcard-name">Mia — Persian Kitten</div>
+        <div class="lcard-meta">
+          <span class="lmeta-item">🐾 Female, 10 wks</span>
+          <span class="lmeta-item">📍 Mumbai</span>
+          <span class="lmeta-item">💉 Vaccinated</span>
+        </div>
+        <div class="lcard-foot">
+          <span class="lcard-price">₹12,500</span>
+          <button class="btn-contact" onclick="openContact('Mia','Persian Kitten','https://images.unsplash.com/photo-1513360371489-6b4e20f58025?w=80&h=80&fit=crop')">💬 Contact</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <div class="lcard-img-wrap">
+        <img src="https://images.unsplash.com/photo-1561037404-61cd46aa615b?w=400&h=280&fit=crop" alt="indie dog"/>
+        <span class="img-badge badge-ngo">🤝 NGO</span>
+        <span class="img-type type-adopt">Adopt</span>
+      </div>
+      <div class="lcard-body">
+        <div class="lcard-name">Rocky — Indie Dog</div>
+        <div class="lcard-meta">
+          <span class="lmeta-item">🐾 Male, 3 months</span>
+          <span class="lmeta-item">📍 Delhi</span>
+          <span class="lmeta-item">💉 Vaccinated</span>
+        </div>
+        <div class="lcard-foot">
+          <span class="lcard-price free">Free Adoption</span>
+          <button class="btn-contact" onclick="openContact('Rocky','Indie Dog','https://images.unsplash.com/photo-1561037404-61cd46aa615b?w=80&h=80&fit=crop')">💬 Contact</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <div class="lcard-img-wrap">
+        <img src="https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=400&h=280&fit=crop" alt="parrot"/>
+        <span class="img-badge badge-v">✓ Verified</span>
+        <span class="img-type type-buy">Buy</span>
+      </div>
+      <div class="lcard-body">
+        <div class="lcard-name">Kiwi — Alexandrine Parrot</div>
+        <div class="lcard-meta">
+          <span class="lmeta-item">🐾 Female, 6 months</span>
+          <span class="lmeta-item">📍 Pune</span>
+          <span class="lmeta-item">🏠 Hand-raised</span>
+        </div>
+        <div class="lcard-foot">
+          <span class="lcard-price">₹8,000</span>
+          <button class="btn-contact" onclick="openContact('Kiwi','Alexandrine Parrot','https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=80&h=80&fit=crop')">💬 Contact</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <div class="lcard-img-wrap">
+        <img src="https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=400&h=280&fit=crop" alt="rabbit"/>
+        <span class="img-badge badge-v">✓ Verified</span>
+        <span class="img-type type-buy">Buy</span>
+      </div>
+      <div class="lcard-body">
+        <div class="lcard-name">Coco — Mini Lop Rabbit</div>
+        <div class="lcard-meta">
+          <span class="lmeta-item">🐾 Male, 5 wks</span>
+          <span class="lmeta-item">📍 Chennai</span>
+          <span class="lmeta-item">🏠 Home-bred</span>
+        </div>
+        <div class="lcard-foot">
+          <span class="lcard-price">₹4,500</span>
+          <button class="btn-contact" onclick="openContact('Coco','Mini Lop Rabbit','https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=80&h=80&fit=crop')">💬 Contact</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="lcard">
+      <div class="lcard-img-wrap">
+        <img src="https://images.unsplash.com/photo-1548247416-ec66f4900b2e?w=400&h=280&fit=crop" alt="indie cat"/>
+        <span class="img-badge badge-ngo">🤝 NGO</span>
+        <span class="img-type type-adopt">Adopt</span>
+      </div>
+      <div class="lcard-body">
+        <div class="lcard-name">Bella — Indie Cat</div>
+        <div class="lcard-meta">
+          <span class="lmeta-item">🐾 Female, 4 months</span>
+          <span class="lmeta-item">📍 Hyderabad</span>
+          <span class="lmeta-item">💉 Vaccinated</span>
+        </div>
+        <div class="lcard-foot">
+          <span class="lcard-price free">Free Adoption</span>
+          <button class="btn-contact" onclick="openContact('Bella','Indie Cat','https://images.unsplash.com/photo-1548247416-ec66f4900b2e?w=80&h=80&fit=crop')">💬 Contact</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════ FEATURES ══════════════ -->
+<section class="features">
+  <div class="sec-head">
+    <div>
+      <div class="sec-eyebrow">Why MyPet?</div>
+      <div class="sec-title">Built Around Trust & Care</div>
+      <div class="sec-sub">Everything you need as a pet owner, in one safe and verified platform.</div>
+    </div>
+  </div>
+  <div class="feat-grid">
+    <div class="feat-card">
+      <div class="feat-icon blue">🛡️</div>
+      <div class="feat-title">Verified Listings Only</div>
+      <div class="feat-desc">Every seller goes through identity and listing verification before going live. No fake photos, no ghost sellers.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon blue">💬</div>
+      <div class="feat-title">Direct Owner Contact</div>
+      <div class="feat-desc">Chat directly with pet owners or NGOs via WhatsApp or our in-app messenger. Zero middlemen.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon green">🏥</div>
+      <div class="feat-title">Vet & Care Services</div>
+      <div class="feat-desc">Book certified vets, groomers, and pet trainers near you — all within the app.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon green">🤝</div>
+      <div class="feat-title">NGO Partnerships</div>
+      <div class="feat-desc">We work with registered NGOs across India to help rescued pets find loving forever homes.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon blue">📋</div>
+      <div class="feat-title">Full Pet Profiles</div>
+      <div class="feat-desc">Breed, age, vaccination records, health history — all in one transparent pet profile.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon warm">🤖</div>
+      <div class="feat-title">Dr. Paw — AI Assistant</div>
+      <div class="feat-desc">Our AI-powered pet health assistant is coming soon. Instant advice, symptom checks, and vet referrals.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ HOW IT WORKS ══════════════ -->
+<section class="process">
+  <div style="text-align:center;max-width:480px;margin:0 auto">
+    <div class="sec-eyebrow">How It Works</div>
+    <div class="sec-title">Find a Pet in 4 Simple Steps</div>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="step-num">1</div><div class="step-title">Search</div><div class="step-desc">Browse verified listings by breed, location, or pet type</div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-title">View Profile</div><div class="step-desc">See full details — age, breed, health records, and photos</div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-title">Contact Owner</div><div class="step-desc">Connect directly via WhatsApp or in-app messaging</div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-title">Bring Home</div><div class="step-desc">Meet the pet, complete adoption, and start your journey</div></div>
+  </div>
+</section>
+
+<!-- ══════════════ TRUST BAND ══════════════ -->
+<section class="trust-band">
+  <div class="eyebrow">Our Promise</div>
+  <h2>What Makes MyPet Different</h2>
+  <p>We're building India's most trusted pet platform — one family at a time.</p>
+  <div class="trust-pills">
+    <div class="tpill">
+      <div class="tpill-icon">🛡️</div>
+      <div class="tpill-text">
+        <div class="tpill-label">100% Verified Sellers</div>
+        <div class="tpill-sub">Every listing manually reviewed</div>
+      </div>
+    </div>
+    <div class="tpill">
+      <div class="tpill-icon">💬</div>
+      <div class="tpill-text">
+        <div class="tpill-label">Direct Contact Always</div>
+        <div class="tpill-sub">No middlemen, no hidden fees</div>
+      </div>
+    </div>
+    <div class="tpill">
+      <div class="tpill-icon">🤝</div>
+      <div class="tpill-text">
+        <div class="tpill-label">NGO & Rescue Support</div>
+        <div class="tpill-sub">Adopt from verified rescuers</div>
+      </div>
+    </div>
+    <div class="tpill">
+      <div class="tpill-icon">🐾</div>
+      <div class="tpill-text">
+        <div class="tpill-label">Complete Pet Profiles</div>
+        <div class="tpill-sub">Health records & full history</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ CTA ══════════════ -->
+<section class="cta-sect">
+  <div class="sec-eyebrow" style="margin-bottom:10px">Ready to Begin?</div>
+  <h2>Your Perfect Pet is Waiting 🐾</h2>
+  <p>Browse real, verified pet listings and find your companion today. Trusted by families across India.</p>
+  <div class="cta-btns">
+    <button class="btn-primary" onclick="document.querySelector('.listings').scrollIntoView({behavior:'smooth'})">Browse Pets</button>
+    <button class="btn-adopt" onclick="document.querySelector('.listings').scrollIntoView({behavior:'smooth'})">Adopt & Save a Life</button>
+  </div>
+</section>
+
+<!-- ══════════════ FOOTER ══════════════ -->
+<footer>
+  <div class="foot-top">
+    <div class="foot-brand">
+      <div style="font-family:'Playfair Display',serif;font-size:20px;color:#fff">My<span style="color:#85B7EB">Pet</span></div>
+      <p>India's most trusted platform for buying, adopting, and caring for pets.</p>
+    </div>
+    <div class="foot-col">
+      <h4>Explore</h4>
+      <a href="#">Buy a Pet</a>
+      <a href="#">Adopt a Pet</a>
+      <a href="#">List Your Pet</a>
+      <a href="#">Pet Profiles</a>
+    </div>
+    <div class="foot-col">
+      <h4>Services</h4>
+      <a href="#">Find a Vet</a>
+      <a href="#">Grooming</a>
+      <a href="#">Training</a>
+      <a href="#">Dr. Paw AI</a>
+    </div>
+    <div class="foot-col">
+      <h4>Company</h4>
+      <a href="#">About Us</a>
+      <a href="#">NGO Partners</a>
+      <a href="#">Careers</a>
+      <a href="#">Contact Us</a>
+    </div>
+  </div>
+  <div class="foot-bot">
+    <p>© 2025 MyPet India. All rights reserved.</p>
+    <p>Privacy Policy · Terms of Service · Support</p>
+  </div>
+</footer>
+
+<!-- ══════════════ CONTACT MODAL ══════════════ -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-pet-info">
+      <img id="modal-img" class="modal-pet-img" src="" alt="pet"/>
+      <div>
+        <div class="modal-pet-name" id="modal-pet-name"></div>
+        <div class="modal-pet-sub" id="modal-pet-sub"></div>
+      </div>
+    </div>
+    <h3>Contact the Owner</h3>
+    <div class="modal-sub">Send a message directly to the pet's seller or rescuer. They'll respond within 24 hours.</div>
+    <input class="modal-input" type="text" placeholder="Your name" id="m-name"/>
+    <input class="modal-input" type="tel" placeholder="Your phone number" id="m-phone"/>
+    <textarea class="modal-textarea" placeholder="Your message — e.g. Hi, I'm interested in adopting. Is the pet still available?" id="m-msg"></textarea>
+    <button class="wa-btn" onclick="openWhatsApp()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+        <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.555 4.116 1.524 5.845L.057 23.428a.5.5 0 0 0 .515.572l5.701-1.496A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.853 0-3.587-.5-5.077-1.373l-.361-.214-3.734.979.999-3.648-.235-.374A9.962 9.962 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
+      </svg>
+      Chat on WhatsApp
+    </button>
+    <div class="modal-or">— or —</div>
+    <button class="msg-btn" onclick="sendInApp()">Send In-App Message</button>
+  </div>
+</div>
+
+<!-- ══════════════ JAVASCRIPT ══════════════ -->
+<script>
+  // Filter pills
+  document.querySelectorAll('.fpill').forEach(p => {
+    p.addEventListener('click', function() {
+      document.querySelectorAll('.fpill').forEach(x => x.classList.remove('on'));
+      this.classList.add('on');
+    });
+  });
+
+  // Contact modal
+  let currentPet = { name: '', breed: '', img: '' };
+
+  function openContact(name, breed, img) {
+    currentPet = { name, breed, img };
+    document.getElementById('modal-pet-name').textContent = name;
+    document.getElementById('modal-pet-sub').textContent = breed;
+    document.getElementById('modal-img').src = img;
+    document.getElementById('m-msg').value = `Hi, I'm interested in ${name} (${breed}). Is ${name} still available?`;
+    document.getElementById('modal').classList.add('show');
+  }
+
+  function closeModal() {
+    document.getElementById('modal').classList.remove('show');
+  }
+
+  // ⚠️ Replace 919999999999 with your actual WhatsApp number
+  function openWhatsApp() {
+    const name = document.getElementById('m-name').value || 'Pet Lover';
+    const msg = document.getElementById('m-msg').value || `Hi, I'm interested in ${currentPet.name}`;
+    const text = encodeURIComponent(`Hello! My name is ${name}.\n\n${msg}\n\nSent via MyPet India`);
+    window.open(`https://wa.me/919999999999?text=${text}`, '_blank');
+  }
+
+  function sendInApp() {
+    const name = document.getElementById('m-name').value;
+    const msg = document.getElementById('m-msg').value;
+    if (!name || !msg) { alert('Please enter your name and message.'); return; }
+    alert(`Message sent! The owner of ${currentPet.name} will contact you within 24 hours.`);
+    closeModal();
+  }
+
+  // Close modal on background click
+  document.getElementById('modal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+</script>
+
+</body>
+</html>
