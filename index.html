@@ -1627,8 +1627,25 @@ document.getElementById('modal').addEventListener('click',function(e){if(e.targe
     <h3>Parrot</h3>
     <p>Talking • Active • Home Pet</p>
   </div>
-
 </section>
+  <style>
+/* Hide all images inside pet details except first one */
+.pet-details img:not(:first-child) {
+  display: none !important;
+}
+
+/* Hide gallery sections completely */
+.gallery {
+  display: none !important;
+}
+
+/* Ensure only one image shows cleanly */
+.pet-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+</style>
 </body>
 </html>
-<!--updated version-->
+
