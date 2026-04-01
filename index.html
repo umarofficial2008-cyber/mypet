@@ -27,7 +27,7 @@ const firebaseConfig = {
   apiKey:            "AIzaSyBbpULCthI_1qV4oOsGLg2LvWJUJ4-VzkE",
   authDomain:        "mypet-website.firebaseapp.com",
   projectId:         "mypet-website",
-  storageBucket:     "mypet-website.appspot.com",
+  storageBucket:     "mypet-website.firebasestorage.app",
   messagingSenderId: "761782152633",
   appId:             "1:761782152633:web:92629519c8ce5067d2da68",
   databaseURL:       "https://mypet-website-default-rtdb.firebaseio.com"
@@ -54,7 +54,7 @@ const CAT_EMOJI   = {dog:"🐕",cat:"🐱",parrot:"🦜",rabbit:"🐇",hamster:"
 /* ─── AUTH STATE ──────────────────────────────────────── */
 onAuthStateChanged(auth, async (user) => {
   currentUser = user;
-  window._CU = user;
+  window._CU = user;   // keep in sync for card renderer
   updateNavUI();
   if (user) {
     loadWishlist();
@@ -101,21 +101,35 @@ function showDBError(msg) {
     </div>`;
 }
 
+/* ─── SAVE PET TO DATABASE (dedicated helper) ──────────── */
+async function savePet(petData) {
+  console.log("Saving to database...", petData);
+  const newRef = push(ref(db, "pets"));
+  await set(newRef, { ...petData, id: newRef.key });
+  console.log("✅ Pet saved to database with key:", newRef.key);
+  return newRef.key;
+}
+
 /* ─── ADD PET ─────────────────────────────────────────── */
 window.submitPet = async function() {
-  const btn = document.getElementById("lp-submit");
-  btn.disabled = true;
-  btn.textContent = "Saving…";
+  const btn   = document.getElementById("lp-submit");
   const errEl = document.getElementById("lp-err");
   errEl.style.display = "none";
 
-  // Gather form values
+  // ── STEP 1: Auth check
+  if (!currentUser) {
+    errEl.textContent = "You must be logged in to list a pet.";
+    errEl.style.display = "block";
+    return;
+  }
+
+  // ── STEP 2: Gather form values
   const name        = document.getElementById("lp-name").value.trim();
   const breed       = document.getElementById("lp-breed").value.trim();
   const location    = document.getElementById("lp-location").value.trim();
   const category    = document.getElementById("lp-category").value;
   const priceType   = document.getElementById("lp-pricetype").value;
-  const price       = document.getElementById("lp-price").value.trim();
+  const price       = document.getElementById("lp-price")?.value.trim() || "";
   const description = document.getElementById("lp-description").value.trim();
   const vaccinated  = document.getElementById("lp-vaccinated").value;
   const friendly    = document.getElementById("lp-friendly").value;
@@ -133,68 +147,90 @@ window.submitPet = async function() {
     if (document.getElementById("sf-" + v)?.checked) suitableFor.push(v);
   });
 
-  // Validation
+  // ── STEP 3: Validation
   if (!name || !breed || !location || !ownerName || !phone) {
     errEl.textContent = "Please fill in Name, Breed, Location, Owner Name, and Phone.";
     errEl.style.display = "block";
-    btn.disabled = false; btn.textContent = "Submit Listing →";
-    return;
-  }
-  if (!currentUser) {
-    errEl.textContent = "You must be logged in to list a pet.";
-    errEl.style.display = "block";
-    btn.disabled = false; btn.textContent = "Submit Listing →";
     return;
   }
   if (files.length === 0) {
     errEl.textContent = "Please upload at least one photo of your pet.";
     errEl.style.display = "block";
-    btn.disabled = false; btn.textContent = "Submit Listing →";
     return;
   }
 
+  // ── STEP 4: Disable button
+  btn.disabled = true;
+  btn.textContent = "Uploading images…";
+
   try {
-    // 1. Upload images to Firebase Storage
+    // ── STEP 5: Upload images to Firebase Storage
+    console.log("Uploading images...");
     const imageURLs = [];
-    for (let i = 0; i < Math.min(files.length, 4); i++) {
-      const file = files[i];
+    const filesToUpload = Array.from(files).slice(0, 4);
+
+    for (let i = 0; i < filesToUpload.length; i++) {
+      const file = filesToUpload[i];
+      btn.textContent = `Uploading image ${i + 1} of ${filesToUpload.length}…`;
+      console.log(`Uploading image ${i + 1}: ${file.name}`);
+
       const path = `pet_images/${currentUser.uid}/${Date.now()}_${i}_${file.name}`;
       const storageRef = sRef(storage, path);
-      const snap = await uploadBytes(storageRef, file);
-      const url  = await getDownloadURL(snap.ref);
-      imageURLs.push(url);
+
+      const uploadSnap = await uploadBytes(storageRef, file);
+      const downloadURL = await getDownloadURL(uploadSnap.ref);
+
+      imageURLs.push(downloadURL);
+      console.log(`Image ${i + 1} uploaded:`, downloadURL);
     }
+    console.log("Images uploaded:", imageURLs);
 
-    // 2. Save pet data to Realtime Database
-    const petsRef = ref(db, "pets");
-    const newRef  = push(petsRef);
+    // ── STEP 6: Build pet data object
+    btn.textContent = "Saving to database…";
     const petData = {
-      id: newRef.key, name, breed, location, category, priceType,
-      price: priceType === "free" ? "Free" : (price || "Contact for Price"),
-      description, vaccinated, friendly, suitableFor,
-      age: ageNum ? `${ageNum} ${ageUnit}` : "Unknown",
-      images: imageURLs,
-      status:  "available",
-      ownerId:   currentUser.uid,
-      ownerName: ownerName || currentUser.displayName || "Owner",
-      phone, email, contactMethod: contact,
-      createdAt: Date.now()
+      name:          name,
+      breed:         breed,
+      location:      location,
+      category:      category,
+      priceType:     priceType,
+      price:         priceType === "free" ? "Free" : (price || "Contact for Price"),
+      description:   description,
+      vaccinated:    vaccinated,
+      friendly:      friendly,
+      suitableFor:   suitableFor,
+      age:           ageNum ? `${ageNum} ${ageUnit}` : "Unknown",
+      images:        imageURLs,
+      status:        "available",
+      ownerId:       currentUser.uid,
+      ownerName:     ownerName || currentUser.displayName || "Owner",
+      phone:         phone,
+      email:         email,
+      contactMethod: contact,
+      createdAt:     Date.now()
     };
-    await set(newRef, petData);
+    console.log("Pet data ready:", petData);
 
-    // 3. Notification + UI
+    // ── STEP 7: Save to Realtime Database
+    const newKey = await savePet(petData);
+
+    // ── STEP 8: Add notification
     await addNotification(`🐾 Your pet "${name}" was listed successfully!`);
     showToast(`🎉 ${name} is now live!`);
+    console.log("✅ All done! Pet listed with key:", newKey);
 
-    // Reset form
+    // ── STEP 9: Show success screen
     document.getElementById("lp-form-inner").style.display = "none";
-    document.getElementById("lp-success").style.display   = "block";
+    document.getElementById("lp-success").style.display    = "block";
 
   } catch(err) {
-    errEl.textContent = "Error: " + err.message;
+    console.error("❌ Error in submitPet:", err);
+    errEl.textContent = "Error: " + err.message + " — Check the browser console for details.";
     errEl.style.display = "block";
   }
-  btn.disabled = false; btn.textContent = "Submit Listing →";
+
+  // Always re-enable button
+  btn.disabled = false;
+  btn.textContent = "Submit Listing →";
 };
 
 /* ─── MARK AS SOLD ────────────────────────────────────── */
@@ -675,8 +711,18 @@ function timeAgo(ts) {
 /* ─── INIT ────────────────────────────────────────────── */
 loadPets();
 
-// Expose functions needed by non-module onclick handlers
-window._FB_LOADED = true;
+// Expose _setFilter so non-module filter pills / search can update state
+window._setFilter = function(af, sq) {
+  activeFilter  = af || "all";
+  searchQuery   = (sq || "").toLowerCase();
+  renderCards();
+};
+
+// Expose window._sq for the bridge
+window._sq = "";
+
+// Expose window._CU for the card renderer
+window._CU = null;  // will be updated by onAuthStateChanged above
 
 </script>
 
@@ -1796,7 +1842,6 @@ function openListPetModal() {
     const el = document.getElementById(id); if (el) el.value = "";
   });
   document.getElementById("img-preview").innerHTML = "";
-  // autofill email
   const u = window._CU;
   if (u) { const em = document.getElementById("lp-email"); if (em) em.value = u.email || ""; }
   openModal("m-list");
@@ -1819,38 +1864,28 @@ function requireAuth(fn) {
   else { openModal("m-auth"); if (window.showToast) window.showToast("Please log in first"); }
 }
 
-/* ── SEARCH & FILTER ──────────────────────────── */
-let _af = "all", _sq = "";
+/* ── SEARCH & FILTER — delegates to module via _setFilter ── */
+function doSearch() {
+  const q = document.getElementById("search-input").value.trim();
+  const af = document.querySelector(".fpill.active")?.dataset.filter || "all";
+  if (window._setFilter) window._setFilter(af, q);
+}
+function clearSearch() {
+  document.getElementById("search-input").value = "";
+  document.querySelectorAll(".fpill").forEach(p => p.classList.remove("active"));
+  document.querySelector(".fpill[data-filter='all']").classList.add("active");
+  if (window._setFilter) window._setFilter("all", "");
+}
 
+/* ── FILTER PILLS ─────────────────────────────── */
 document.querySelectorAll(".fpill").forEach(pill => {
   pill.addEventListener("click", function() {
     document.querySelectorAll(".fpill").forEach(p => p.classList.remove("active"));
     this.classList.add("active");
-    _af = this.dataset.filter;
-    // Patch module's state
-    if (window.renderCards) {
-      window._af = _af;
-      applySearch();
-    }
+    const currentSearch = document.getElementById("search-input")?.value.trim() || "";
+    if (window._setFilter) window._setFilter(this.dataset.filter, currentSearch);
   });
 });
-
-function doSearch() {
-  _sq = document.getElementById("search-input").value.trim();
-  applySearch();
-}
-function clearSearch() {
-  _sq = ""; _af = "all";
-  document.getElementById("search-input").value = "";
-  document.querySelectorAll(".fpill").forEach(p => p.classList.remove("active"));
-  document.querySelector(".fpill[data-filter='all']").classList.add("active");
-  applySearch();
-}
-function applySearch() {
-  // The module reads from allPets via its own renderCards
-  // We patch the closed-over variables via a workaround using the exposed function
-  if (window._patchAndRender) window._patchAndRender(_af, _sq);
-}
 
 /* ── NOTIFICATIONS DROPDOWN ───────────────────── */
 function toggleNotif() {
@@ -1863,139 +1898,3 @@ document.addEventListener("click", e => {
   }
 });
 </script>
-
-<!-- Patch bridge: lets non-module JS call into the module's closed scope -->
-<script type="module">
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
-// Expose the patch-and-render function after module state is ready
-window._patchAndRender = function(af, sq) {
-  // activeFilter and searchQuery are in the module scope — we re-render via the exposed function
-  // The simplest reliable bridge: dispatch a custom event
-  window.dispatchEvent(new CustomEvent("mypet-filter", { detail: { af, sq } }));
-};
-
-window.addEventListener("mypet-filter", e => {
-  // These vars are in the module's closure — access via exposed render
-  // We update them via another approach: redefine in the module
-  if (window._setFilter) window._setFilter(e.detail.af, e.detail.sq);
-});
-</script>
-
-<!-- Second module: exposes _setFilter so UI can call into first module's state -->
-<script type="module">
-// Expose filter setter
-window._setFilter = (af, sq) => {
-  // This only works if renderCards uses window-accessible state
-  // Since allPets is in the first module, we use the already-exposed renderCards
-  // and handle filtering there
-  window._activeFilter = af;
-  window._searchQuery  = sq;
-  if (window.renderCards) window.renderCards();
-};
-
-// Override renderCards to use window-accessible filter state
-const _origRenderCards = window.renderCards;
-window.renderCards = function() {
-  const af = window._activeFilter || "all";
-  const sq = (window._searchQuery || "").toLowerCase();
-  const allPets = window._allPets || {};
-  const grid = document.getElementById("cg");
-  if (!grid) return;
-
-  let pets = Object.values(allPets).sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
-  if (af !== "all") pets = pets.filter(p => (p.category||"other") === af);
-  if (sq) pets = pets.filter(p =>
-    [p.name,p.breed,p.location,p.category,p.ownerName,p.description].join(" ").toLowerCase().includes(sq));
-
-  const noRes = document.getElementById("no-res");
-  if (noRes) noRes.style.display = pets.length === 0 ? "block" : "none";
-  grid.innerHTML = pets.length === 0 ? "" : pets.map(p => window._makeCard(p)).join("");
-};
-</script>
-
-<!-- Third module: exposes allPets and makeCard to window for cross-module access -->
-<script type="module">
-import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
-// Reuse existing app
-const app = getApps()[0];
-const db  = getDatabase(app);
-
-const DEFAULT_IMG = "https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?w=600&h=400&fit=crop";
-const CAT_EMOJI   = {dog:"🐕",cat:"🐱",parrot:"🦜",rabbit:"🐇",hamster:"🐹",bird:"🐦",other:"🐾"};
-
-// Sync allPets to window for the search bridge
-const petsRef = ref(db, "pets");
-onValue(petsRef, snap => {
-  window._allPets = snap.val() || {};
-  if (window.renderCards) window.renderCards();
-});
-
-// Make card function accessible globally
-window._makeCard = function(p) {
-  if (!p || !p.id) return "";
-  const wishlist = window._wishlist || {};
-  const CU = window._CU;
-  const img    = (p.images && p.images[0]) ? p.images[0] : DEFAULT_IMG;
-  const isSold  = p.status === "sold";
-  const isSaved = !!wishlist[p.id];
-  const isOwner = CU && CU.uid === p.ownerId;
-  const isFree  = p.priceType === "free";
-  const priceDisplay = isFree ? "Free" : (p.price || "Contact");
-  const tags = (p.suitableFor || []).map(t =>
-    `<span class="tag tag-${t}">${t.charAt(0).toUpperCase()+t.slice(1)}</span>`).join("");
-  const imgCount = (p.images || []).length;
-  return `
-  <div class="pet-card" id="card-${p.id}">
-    <div class="card-img-wrap">
-      <img src="${img}" alt="${p.name}" loading="lazy"
-        onerror="this.onerror=null;this.src='${DEFAULT_IMG}'"/>
-      ${isSold ? `<div class="sold-overlay"><span class="sold-tag">SOLD</span></div>` : ""}
-      <span class="card-type-badge ${isFree?"badge-free":"badge-sale"}">${isFree?"Free":"For Sale"}</span>
-      ${imgCount > 1 ? `<span class="img-count-badge">📷 ${imgCount}</span>` : ""}
-      <button class="wish-btn ${isSaved?"saved":""}"
-        onclick="event.stopPropagation();toggleWishlist('${p.id}')"
-        title="${isSaved?"Remove from wishlist":"Save"}">
-        ${isSaved ? "❤️" : "🤍"}
-      </button>
-      ${isOwner ? `<span class="owner-badge">Mine</span>` : ""}
-    </div>
-    <div class="card-body" onclick="openDetail('${p.id}')">
-      <div class="card-name">${p.name}</div>
-      <div class="card-breed">${p.breed || ""}</div>
-      <div class="card-meta-row">
-        ${p.age       ? `<span class="meta-chip">🎂 ${p.age}</span>` : ""}
-        ${p.location  ? `<span class="meta-chip">📍 ${p.location}</span>` : ""}
-        ${p.vaccinated==="yes" ? `<span class="meta-chip vacc">💉 Vaccinated</span>` : ""}
-        ${p.friendly  ==="yes" ? `<span class="meta-chip friend">🤝 Friendly</span>` : ""}
-      </div>
-      ${tags ? `<div class="card-tags">${tags}</div>` : ""}
-    </div>
-    <div class="card-footer">
-      <span class="card-price ${isFree?"free-price":""}">${priceDisplay}</span>
-      <div class="card-actions">
-        <button class="btn btn-outline btn-sm" onclick="openDetail('${p.id}')">👁 View</button>
-        ${!isSold ? `<button class="btn btn-blue btn-sm" onclick="event.stopPropagation();openContact('${p.id}')">💬 Contact</button>` : ""}
-      </div>
-    </div>
-  </div>`;
-};
-
-// Keep window._wishlist in sync
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-const auth = getAuth(app);
-onAuthStateChanged(auth, user => {
-  if (!user) { window._wishlist = {}; return; }
-  // Sync wishlist to window
-  const wlRef = ref(db, `users/${user.uid}/wishlist`);
-  onValue(wlRef, snap => {
-    window._wishlist = snap.val() || {};
-    if (window.renderCards) window.renderCards();
-  });
-});
-</script>
-
-</body>
-</html>
